@@ -1,4 +1,4 @@
 #[allow(dead_code)]
-mod docx_test;
-#[allow(dead_code)]
 mod docx;
+#[allow(dead_code)]
+mod docx_test;

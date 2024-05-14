@@ -27,13 +27,19 @@ impl DocZipData {
 
     fn read_text(&mut self) -> Result<String> {
         let mut text = String::new();
-        self.data.borrow_mut().by_name("word/document.xml")?.read_to_string(&mut text)?;
+        self.data
+            .borrow_mut()
+            .by_name("word/document.xml")?
+            .read_to_string(&mut text)?;
         Ok(text)
     }
 
     fn read_links(&mut self) -> Result<String> {
         let mut links = String::new();
-        self.data.borrow_mut().by_name("word/_rels/document.xml.rels")?.read_to_string(&mut links)?;
+        self.data
+            .borrow_mut()
+            .by_name("word/_rels/document.xml.rels")?
+            .read_to_string(&mut links)?;
         Ok(links)
     }
 
@@ -78,7 +84,6 @@ impl DocZipData {
     }
 }
 
-
 pub struct Docx {
     data: DocZipData,
     contents: String,
@@ -110,26 +115,28 @@ impl Docx {
         &self.contents
     }
 
-    pub fn replace(&mut self, old_str: &str, new_str: &str, count: usize) -> Result<()>{
+    pub fn replace(&mut self, old_str: &str, new_str: &str, count: usize) -> Result<()> {
         println!("old: {}, new: {}", old_str, new_str);
         let old_str = Docx::encode(old_str);
         let new_str = Docx::encode(new_str);
         println!("old: {}, new: {}", old_str, new_str);
-        self.contents = self.contents.replacen(old_str.as_str(), new_str.as_str(), count);
+        self.contents = self
+            .contents
+            .replacen(old_str.as_str(), new_str.as_str(), count);
         Ok(())
     }
 
     fn encode(s: &str) -> String {
-        const TAB:&str = "</w:t><w:tab/><w:t>";
+        const TAB: &str = "</w:t><w:tab/><w:t>";
         const NEWLINE: &str = "<w:br/>";
 
         let mut output = s.to_string();
         output = output.replace("<string>", "");
         output = output.replace("</string>", "");
         output = output.replace("\r\n", NEWLINE); // \r\n (Windows newline)
-        output = output.replace("\r", NEWLINE);      // \r (earlier Mac newline)
-        output = output.replace("\n", NEWLINE);      // \n (unix/linux/OS X newline)
-        output = output.replace("\t", TAB);          // \t (tab)
+        output = output.replace('\r', NEWLINE); // \r (earlier Mac newline)
+        output = output.replace('\n', NEWLINE); // \n (unix/linux/OS X newline)
+        output = output.replace('\t', TAB); // \t (tab)
         output
     }
 
@@ -148,9 +155,19 @@ impl Docx {
             } else if file.name() == "word/_rels/document.xml.rels" {
                 zip_writer.write_all(self.links.as_bytes())?;
             } else if file.name().contains("header") && self.headers.contains_key(file.name()) {
-                zip_writer.write_all(self.headers.get(file.name()).unwrap_or(&"".to_string()).as_bytes())?;
+                zip_writer.write_all(
+                    self.headers
+                        .get(file.name())
+                        .unwrap_or(&"".to_string())
+                        .as_bytes(),
+                )?;
             } else if file.name().contains("footer") && self.footers.contains_key(file.name()) {
-                zip_writer.write_all(self.footers.get(file.name()).unwrap_or(&"".to_string()).as_bytes())?;
+                zip_writer.write_all(
+                    self.footers
+                        .get(file.name())
+                        .unwrap_or(&"".to_string())
+                        .as_bytes(),
+                )?;
             } else {
                 let mut data = Vec::new();
                 file.read_to_end(&mut data)?;
