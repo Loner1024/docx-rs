@@ -210,6 +210,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "docx"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "zip",
+]
+
+[[package]]
 name = "equivalent"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -471,14 +479,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "template"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "zip",
 ]
 
 [[package]]
