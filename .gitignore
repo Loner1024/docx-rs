@@ -1,2 +1,4 @@
 /target
 TestDocumentResult.docx
+.idea/
+.DS_Store
